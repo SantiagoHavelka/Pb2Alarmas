@@ -12,7 +12,7 @@ public class Sensor {
 		this.estado = activado;
 	}
 
-	public Boolean getEstado() {
+	public Boolean isActivado() {
 		return estado;
 	}
 

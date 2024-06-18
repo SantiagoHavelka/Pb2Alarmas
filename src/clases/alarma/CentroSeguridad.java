@@ -56,7 +56,7 @@ public class CentroSeguridad {
 		for(Alarma alarm: this.alarmas) {
 			if(alarm.getId().equals(idAlarma) && alarm.getCodigoActivacionDesactivacion().equals(codigoActivacion)) {
 				for(Sensor sens : alarm.getSensores()) {
-					if(sens.getId().equals(idSensor)) {
+					if(sens.getId().equals(idSensor) && !sens.isActivado()) {
 						sens.setEstado(true);
 						return true;
 					}
@@ -66,24 +66,25 @@ public class CentroSeguridad {
 		return false;
 	}
 
-	public Boolean activarDesactivarAlarma(Integer idAlarma, String codigoConfigAlarma, Usuario usuario) {
+	public Boolean activarDesactivarAlarma(Integer idAlarma, String codigoConfigAlarma, Usuario usuario) throws SensorDesactivadoException {
 		for(Alarma al : this.alarmas) {
 			if(al.getId().equals(idAlarma) && al.getCodigoConfiguracion().equals(codigoConfigAlarma)) {
 				for(Usuario u : this.usuarios) {
 					if(u.equals(usuario)) {
 						for(Sensor s : al.getSensores()) {
-							if(s.getEstado() == false) {
+							if(!s.isActivado()) {
 								al.setActivada(false);
-					}else {
-						al.setActivada(true);
-						return true;
+								throw new SensorDesactivadoException("Uno o varios sensores estan desactivados");
+							}else {
+								al.setActivada(true);
+							}
 					}
 				}
 			}
 		}
 	}
-		}
-		return false;
+		
+		return true;
 	}
 }
 
