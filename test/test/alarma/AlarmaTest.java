@@ -2,14 +2,20 @@ package test.alarma;
 
 import static org.junit.Assert.*;
 
+import java.time.LocalDate;
+import java.util.TreeSet;
+
 import org.junit.Before;
 import org.junit.Test;
+
+import clases.alarma.Accion;
 import clases.alarma.Alarma;
 import clases.alarma.CentroSeguridad;
 import clases.alarma.CodigoAlarmaIncorrectoException;
 import clases.alarma.Sensor;
 import clases.alarma.SensorDesactivadoException;
 import clases.alarma.SensorDuplicadoException;
+import clases.alarma.TipoDeOperacion;
 import clases.alarma.Usuario;
 import clases.alarma.UsuarioConfigurador;
 
@@ -206,7 +212,61 @@ public class AlarmaTest {
 	     
 	}
 	@Test
-	public void queParaUnaAlarmaDeterminadaSePuedaObtenerUnaColeccionOrdenadaDeAccionesDeTipoConfiguracionOrdenadPorIdDeAccion() {
+	public void queSePuedaAccionarSobreUnaAlarma() throws CodigoAlarmaIncorrectoException {
+		Alarma alarmaDeCentral = new Alarma(44,224455, "ccc", "Alarma Sensorial");
+		this.centroDeSeguridad.registrarAlarma(alarmaDeCentral);
+		
+		Usuario usuarioConfig = new UsuarioConfigurador(425567, "Lucas");
+		this.centroDeSeguridad.registrarUsuario(usuarioConfig);
+		
+		this.centroDeSeguridad.agregarUsuarioAUnaAlarma(425567,44, "ccc");
+		
+		Integer idAccion = 22;
+		LocalDate fecha = LocalDate.of(2024, 6, 23);
+		TipoDeOperacion tipoOperacion = TipoDeOperacion.ACTIVAR;
+		
+		Accion accionEnAlarma = new Accion(idAccion, alarmaDeCentral, usuarioConfig, fecha, tipoOperacion);
+		Boolean sePuedeAgregarAccionEnLaAlarma = this.centroDeSeguridad.accionarEnAlarma(accionEnAlarma);
+		
+		assertTrue(sePuedeAgregarAccionEnLaAlarma);	
+		
+	}
+	@Test
+	public void queParaUnaAlarmaDeterminadaSePuedaObtenerUnaColeccionOrdenadaDeAccionesDeTipoConfiguracionOrdenadPorIdDeAccion() throws CodigoAlarmaIncorrectoException {
+		Alarma alarmaDeCentral = new Alarma(44,224455, "ccc", "Alarma Sensorial");
+		this.centroDeSeguridad.registrarAlarma(alarmaDeCentral);
+		
+		Usuario usuarioConfig = new UsuarioConfigurador(425567, "Lucas");
+		this.centroDeSeguridad.registrarUsuario(usuarioConfig);
+		
+		this.centroDeSeguridad.agregarUsuarioAUnaAlarma(425567,44, "ccc");
+		
+		Integer idAccion = 22;
+		LocalDate fecha = LocalDate.of(2024, 6, 23);
+		TipoDeOperacion tipoOperacion = TipoDeOperacion.CONFIGURAR;
+		
+		Integer idAccion2 = 44;
+		LocalDate fecha2 = LocalDate.of(2024, 6, 28);
+		TipoDeOperacion tipoOperacion2 = TipoDeOperacion.CONFIGURAR;
+		
+		
+		Integer idAccion3 = 12;
+		LocalDate fecha3 = LocalDate.of(2024, 7, 11);
+		TipoDeOperacion tipoOperacion3 = TipoDeOperacion.CONFIGURAR;
+		
+		
+		Accion accionEnAlarma = new Accion(idAccion, alarmaDeCentral, usuarioConfig, fecha, tipoOperacion);
+		Accion accionEnAlarma2 = new Accion(idAccion2, alarmaDeCentral, usuarioConfig, fecha2, tipoOperacion2);
+		Accion accionEnAlarma3 = new Accion(idAccion3, alarmaDeCentral, usuarioConfig, fecha3, tipoOperacion3);
+		
+		 this.centroDeSeguridad.accionarEnAlarma(accionEnAlarma);
+		 this.centroDeSeguridad.accionarEnAlarma(accionEnAlarma2);
+		 this.centroDeSeguridad.accionarEnAlarma(accionEnAlarma3);
+		 
+		 TreeSet<Accion>acciones = this.centroDeSeguridad.obtenerAcciones(alarmaDeCentral);
+		 
+		 assertEquals(acciones.first(),accionEnAlarma3 );
+		 assertEquals(acciones.last(),accionEnAlarma2 );
 		
 	}
 

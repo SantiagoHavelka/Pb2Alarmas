@@ -15,7 +15,7 @@ public class Alarma {
 	private String nombre;
 	private Boolean activada;
 	private List<Usuario> usuariosValidos;
-	private Set<Accion> acciones;
+	private TreeSet<Accion> acciones;
 	private Set<Sensor> sensores;
 
 	public Alarma(Integer idAlarma, Integer codigoActivacionDesactivacion, String codigoConfiguracion2, String nombre) {
@@ -77,7 +77,7 @@ public class Alarma {
 		return usuariosValidos;
 	}
 
-	public Set<Accion> getAcciones() {
+	public TreeSet<Accion> getAcciones() {
 		return acciones;
 	}
 
@@ -104,6 +104,5 @@ public class Alarma {
 		}
 		return buscado;
 	}
-	
 
 }

@@ -1,9 +1,10 @@
 package clases.alarma;
 
 import java.util.List;
+import java.util.TreeSet;
 import java.util.ArrayList;
 
-public class CentroSeguridad {
+public class CentroSeguridad implements ICentroSeguridad{
 
 	private String nombre;
 	private List<Alarma>alarmas;
@@ -14,15 +15,16 @@ public class CentroSeguridad {
 		this.alarmas = new ArrayList<>();
 		this.usuarios = new ArrayList<>();
 	}
-
+	@Override
 	public Boolean registrarAlarma(Alarma alarmaDeCentral) {
 		return this.alarmas.add(alarmaDeCentral);
 		
 	}
+	@Override
 	public Boolean registrarUsuario(Usuario usuario) {
 		return this.usuarios.add(usuario);
 	}
-
+	@Override
 	public Boolean agregarUsuarioAUnaAlarma(Integer dni, Integer idAlarma, String codigoConfiguracion) throws CodigoAlarmaIncorrectoException {
 		for(Usuario user : this.usuarios) {
 			if(user.getDni().equals(dni)) {
@@ -37,7 +39,7 @@ public class CentroSeguridad {
 		throw new CodigoAlarmaIncorrectoException("El codigo de configuracion es incorrecto");
 		
 	}
-
+	@Override
 	public Boolean agregarSensorAAlarma(Integer idAlarma, String codigoConfigAlarma, Sensor sensor, Integer dniUsuarioConfigurador) throws SensorDuplicadoException {
 		for(Alarma alarm: this.alarmas) {
 			if(alarm.getId().equals(idAlarma) && alarm.getCodigoConfiguracion().equals(codigoConfigAlarma)) {
@@ -51,7 +53,7 @@ public class CentroSeguridad {
 						
 		throw new SensorDuplicadoException("El sensor que quiere agregar ya se encuentra en la alarma");
 	}
-
+	@Override
 	public Boolean activarSensorDeAlarma(Integer idSensor, Integer idAlarma, Integer codigoActivacion) {
 		for(Alarma alarm: this.alarmas) {
 			if(alarm.getId().equals(idAlarma) && alarm.getCodigoActivacionDesactivacion().equals(codigoActivacion)) {
@@ -65,7 +67,7 @@ public class CentroSeguridad {
 		}
 		return false;
 	}
-
+	@Override
 	public Boolean activarDesactivarAlarma(Integer idAlarma, String codigoConfigAlarma, Usuario usuario) throws SensorDesactivadoException {
 		for(Alarma al : this.alarmas) {
 			if(al.getId().equals(idAlarma) && al.getCodigoConfiguracion().equals(codigoConfigAlarma)) {
@@ -82,9 +84,28 @@ public class CentroSeguridad {
 				}
 			}
 		}
-	}
-		
+	}	
 		return true;
+	}
+	@Override
+	public Boolean accionarEnAlarma(Accion accionEnAlarma) {
+		for(Alarma al : this.alarmas) {
+			if(al.getId().equals(accionEnAlarma.getAlarma().getId())) {
+				 al.getAcciones().add(accionEnAlarma);
+				 return true;
+			}
+			
+		}
+		return false;
+	}
+	@Override
+	public TreeSet<Accion> obtenerAcciones(Alarma alarmaDeCentral) {
+		for(Alarma al : this.alarmas) {
+			if(al.getId().equals(alarmaDeCentral.getId())) {
+				return al.getAcciones();
+			}
+		}
+		return null;
 	}
 }
 
